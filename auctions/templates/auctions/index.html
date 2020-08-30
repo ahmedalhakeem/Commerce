@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    TODO
+    <div class="card" style="width: 18rem;">
+        {% for list in listings %}
+        {% if list.picture%}
+        
+        <img src="{{ list.picture.url }}" class="card-img-top">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title"><b>Title</b> : {{ list.title }}</h5>
+            <p class="card-text"><b>Description:</b> {{ list.description }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><b>Price:</b> {{ list.start_bid }}</li>
+            <li class="list-group-item"><b>Category:</b> {{ list.category }}</li>
+        </ul>
+        <br>
+        {% endfor %}
+    </div>
+    
+    
+
+    
+       
+        <li><img src="{{ listform.picture.url }}" class="img-responsive"/></li>
+        
+
+    </ul>    
+    
+
+    
+{% endblock %}

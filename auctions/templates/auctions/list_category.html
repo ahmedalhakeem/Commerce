@@ -1,0 +1,8 @@
+{% extends 'auctions/layout.html' %}
+{% block body %}
+    <ul>
+        {% for item in list %}
+        <li>{{ item.title }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
