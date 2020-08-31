@@ -12,8 +12,9 @@ from .forms import *
 
 def index(request):
     listings = Listings.objects.filter(active=True)
+    print(len(listings))
     
-    print(listings)
+    
     return render(request, "auctions/index.html", {
         "listings" : listings
     })
@@ -119,3 +120,23 @@ def create_listing(request, user_id):
             "user_id" : user.id
         
         })
+
+@login_required
+def listing(request, list_id):
+    exact_item = Listings.objects.get(pk=list_id)
+    print(exact_item.start_bid)
+
+    return render(request, "auctions/listing.html",{
+     "item": exact_item,
+     "list_id":list_id
+    })
+  
+    
+    #if exact_item == "" :
+     #   return HttpResponse('The item is removed from the system')
+    #if request.method == "POST":
+     #   form = BidsForm(request.POST)
+      #  if form.is_valid():
+       #     bid_amount = form.cleaned_data["bid_amount"]
+            #fetch the listing current price
+    

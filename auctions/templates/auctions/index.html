@@ -18,7 +18,9 @@
             <li class="list-group-item"><b>Price:</b> {{ list.start_bid }}</li>
             <li class="list-group-item"><b>Category:</b> {{ list.category }}</li>
         </ul>
-        <br>
+        <div class="card-body">
+            <a href="{% url 'listing' list.id %}" class="card-link">More details</a>
+        </div>
         {% endfor %}
     </div>
     
