@@ -11,8 +11,8 @@ class ListingsForm(forms.Form):
 
 class BidsForm(forms.Form):
     bid_amount = forms.IntegerField(label="enter bid")
-    uid = forms.ModelChoiceField(queryset=User.objects.all())
-    listid = forms.ModelChoiceField(queryset=Listings.objects.all())
+    #uid = forms.ModelChoiceField(queryset=User.objects.all())
+    #listid = forms.ModelChoiceField(queryset=Listings.objects.all())
 
 class CommentsForm(forms.Form):
     comment = forms.CharField(label="Comment", widget=forms.Textarea)
