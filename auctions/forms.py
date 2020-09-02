@@ -19,4 +19,8 @@ class CommentsForm(forms.Form):
     user_comment = forms.ModelChoiceField(queryset=User.objects.all())
     list_comment = forms.ModelChoiceField(queryset=Listings.objects.all())
 
+class WatchlistForm(forms.Form):
+    watchlist = forms.CharField(widget= forms.HiddenInput(), required=False)
+    
+
 

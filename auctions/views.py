@@ -126,6 +126,8 @@ def listing(request, list_id):
     exact_item = Listings.objects.get(pk=list_id)
     print(exact_item.start_bid)
 
+    
+
     if request.method=="POST":
         form = BidsForm(request.POST or None)
         if form.is_valid():
@@ -143,7 +145,19 @@ def listing(request, list_id):
      "list_id":list_id,
      "form" : BidsForm()
     })
-  
+
+@login_required
+def watchlist(request, user_id):
+    user = User.objects.get(pk=user_id)
+    watchlist = user.watchlist.all() 
+    return render(request, "auctions/watchlist.html",{
+        "user": user,
+        "watchlist" : watchlist
+    })
+    
+
+    #watchlists = []
+      
     
     #if exact_item == "" :
      #   return HttpResponse('The item is removed from the system')
