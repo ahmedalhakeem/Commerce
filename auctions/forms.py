@@ -10,7 +10,7 @@ class ListingsForm(forms.Form):
     start_bid = forms.IntegerField(label="Start Price", required=True)
 
 class BidsForm(forms.Form):
-    bid_amount = forms.IntegerField(label="enter bid")
+    bid_amount = forms.IntegerField(label="enter bid", required=False)
     #uid = forms.ModelChoiceField(queryset=User.objects.all())
     #listid = forms.ModelChoiceField(queryset=Listings.objects.all())
 

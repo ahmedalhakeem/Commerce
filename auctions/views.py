@@ -123,23 +123,40 @@ def create_listing(request, user_id):
 
 @login_required
 def listing(request, list_id):
+    
     exact_item = Listings.objects.get(pk=list_id)
-    print(exact_item.start_bid)
+  #  if request.user.is_authenticated:
+   #     user = User.objects.get(pk=request.user.id)
+              
+    #    print(request.user.id)
+    
+   # print(exact_item.start_bid)
 
     
 
     if request.method=="POST":
-        form = BidsForm(request.POST or None)
-        if form.is_valid():
-            current_bid = form.cleaned_data["bid_amount"]
-            if exact_item.start_bid < current_bid:
-                exact_item.start_bid = current_bid
-                exact_item.save()
-            else:
-                return HttpResponse("The amount you are bidding is less than the current bid")
+        #Check to see if user clicks on bid
+        if 'bid' in request.POST:
+            form = BidsForm(request.POST or None)
+          
+            if form.is_valid():
+                current_bid = form.cleaned_data["bid_amount"]
+                if exact_item.start_bid < current_bid:
+                    exact_item.start_bid = current_bid
+                    exact_item.save()
+                else:
+                    return HttpResponse("The amount you are bidding is less than the current bid")
                 
-            return HttpResponseRedirect(reverse("listing", args=(list_id,)))     
-
+            return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+        if 'watchlist' in request.POST:
+            if request.user.is_authenticated:
+                user = User.objects.get(pk=request.user.id)
+                user.watchlist.add(exact_item)
+                
+            return render(request, "auctions/watchlist.html", {
+                "user": user
+            })
+                
     return render(request, "auctions/listing.html",{
      "item": exact_item,
      "list_id":list_id,
