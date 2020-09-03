@@ -124,15 +124,11 @@ def create_listing(request, user_id):
 @login_required
 def listing(request, list_id):
     
+    
     exact_item = Listings.objects.get(pk=list_id)
-  #  if request.user.is_authenticated:
-   #     user = User.objects.get(pk=request.user.id)
-              
-    #    print(request.user.id)
-    
-   # print(exact_item.start_bid)
-
-    
+    #Recognize who created the listing
+    created = Created_by.objects.get(listing=exact_item)
+    print(f"The one who created the listing is: {created.creator}")
 
     if request.method=="POST":
         #Check to see if user clicks on bid
@@ -151,20 +147,31 @@ def listing(request, list_id):
         if 'watchlist' in request.POST:
             if request.user.is_authenticated:
                 user = User.objects.get(pk=request.user.id)
-                user.watchlist.add(exact_item)
+                existance = user.watchlist.all()
+                if exact_item in existance:
+                    
+                    return HttpResponse(f"Mr. {user},  this item is already in your watchlist")
                 
-            return render(request, "auctions/watchlist.html", {
-                "user": user
+                print(existance)
+                user.watchlist.add(exact_item)
+            
+            return render(request, "auctions/listing.html", {
+                "list_id":list_id,
+                "item" : exact_item,
+                "created_by" : created,
+                "form" : BidsForm()
             })
                 
     return render(request, "auctions/listing.html",{
      "item": exact_item,
      "list_id":list_id,
+     "created_by" : created,
      "form" : BidsForm()
     })
 
 @login_required
 def watchlist(request, user_id):
+
     user = User.objects.get(pk=user_id)
     watchlist = user.watchlist.all() 
     return render(request, "auctions/watchlist.html",{
@@ -173,14 +180,3 @@ def watchlist(request, user_id):
     })
     
 
-    #watchlists = []
-      
-    
-    #if exact_item == "" :
-     #   return HttpResponse('The item is removed from the system')
-    #if request.method == "POST":
-     #   form = BidsForm(request.POST)
-      #  if form.is_valid():
-       #     bid_amount = form.cleaned_data["bid_amount"]
-            #fetch the listing current price
-    
