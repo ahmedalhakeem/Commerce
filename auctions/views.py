@@ -123,20 +123,24 @@ def create_listing(request, user_id):
 
 @login_required
 def listing(request, list_id):
-    
-    
+    # Select the list through its id:
     exact_item = Listings.objects.get(pk=list_id)
-    #Recognize who created the listing
+
+    #Recognize who created the listing:
     created = Created_by.objects.get(listing=exact_item)
     print(f"The one who created the listing is: {created.creator}")
 
+    #check if the user submits the form
     if request.method=="POST":
-        #Check to see if user clicks on bid
+
+        #Check to see if user clicks on bid button
         if 'bid' in request.POST:
             form = BidsForm(request.POST or None)
-          
+            #Checking form validity 
             if form.is_valid():
                 current_bid = form.cleaned_data["bid_amount"]
+
+                #Compare between the bidding value and the current bid 
                 if exact_item.start_bid < current_bid:
                     exact_item.start_bid = current_bid
                     exact_item.save()
@@ -144,15 +148,21 @@ def listing(request, list_id):
                     return HttpResponse("The amount you are bidding is less than the current bid")
                 
             return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+        #end-bid
+
+        # When the user clicks on 'add to watchlist':    
         if 'watchlist' in request.POST:
             if request.user.is_authenticated:
+                #select the username
                 user = User.objects.get(pk=request.user.id)
-                existance = user.watchlist.all()
-                if exact_item in existance:
+                #Check the existence of the item in the user's watchlist page
+                existence = user.watchlist.all()
+                if exact_item in existence:
                     
                     return HttpResponse(f"Mr. {user},  this item is already in your watchlist")
                 
-                print(existance)
+                print(exietance)
+                # Add to watchlist
                 user.watchlist.add(exact_item)
             
             return render(request, "auctions/listing.html", {
@@ -161,12 +171,32 @@ def listing(request, list_id):
                 "created_by" : created,
                 "form" : BidsForm()
             })
+        #Comments 
+        comments = CommentsForm(request.POST or None)
+
+      
+        if comments.is_valid():
+            user = User.objects.get(pk=request.user.id)
+            comment = comments.cleaned_data["comment"]
+            ucomment= Comments(comment=comment, user_comment=user, list_comment=exact_item)
+            ucomment.save()
+
+
+            return HttpResponseRedirect(reverse(listing, args=(list_id,)))
                 
+           
+
+
+    # Display all comments 
+    allcomments = Comments.objects.filter(list_comment=exact_item).all()
+
     return render(request, "auctions/listing.html",{
      "item": exact_item,
      "list_id":list_id,
      "created_by" : created,
-     "form" : BidsForm()
+     "form" : BidsForm(),
+     "comments": CommentsForm,
+     "all_comments": allcomments
     })
 
 @login_required

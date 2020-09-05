@@ -4,35 +4,36 @@
     <h2>Active Listings</h2>
 
     TODO
-    <div class="card" style="width: 18rem;">
+    <!--Content-->
+    <div class="content clear-fix">
+        <!--Main Content-->
         {% for list in listings %}
-        {% if list.picture%}
-        
-        <img src="{{ list.picture.url }}" class="card-img-top">
-        {% endif %}
-        <div class="card-body">
-            <h5 class="card-title"><b>Title</b> : {{ list.title }}</h5>
-            <p class="card-text"><b>Description:</b> {{ list.description }}</p>
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item"><b>Price:</b> {{ list.start_bid }}</li>
-            <li class="list-group-item"><b>Category:</b> {{ list.category }}</li>
-        </ul>
-        <div class="card-body">
-            <a href="{% url 'listing' list.id %}" class="card-link">More details</a>
-        </div>
+        <div class="main-content">
+            <!--<h1 class="recent-post-title">Recent Posts</h1>-->
+            <div class="post">
+                {% if list.picture%}
+                <img src="{{ list.picture.url }}" class="post-image">
+                {% endif %}
+                <div class="post-preview">
+                    <h2><a href="{% url 'listing' list.id %}">{{ list.title }}</a></h2>
+                    <i class="far fa-user">Information</i>
+                    &nbsp;
+                    <!--<i class="far calendar">Date</i>-->
+                    <p class="preview-text">{{ list.description }}
+                    <p class="preview-text">{{ list.category}}</p> 
+                
+                    
+                    <a href="{% url 'listing' list.id %}" class="btn read-more">Read More</a>
+                </div>
+            </div>
+
+        </div> 
         {% endfor %}
+
     </div>
-    
+    {% endblock %}
+
+
     
 
     
-       
-        <li><img src="{{ listform.picture.url }}" class="img-responsive"/></li>
-        
-
-    </ul>    
-    
-
-    
-{% endblock %}
