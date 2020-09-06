@@ -71,6 +71,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+
 def category(request):
     list_of_categories = Category.objects.all()
     return render(request, "auctions/categories.html",{
@@ -126,9 +127,27 @@ def listing(request, list_id):
     # Select the list through its id:
     exact_item = Listings.objects.get(pk=list_id)
 
+    
+    
+
     #Recognize who created the listing:
     created = Created_by.objects.get(listing=exact_item)
+    
+    #Close Auctions
+    if request.user == created.creator:
+        owner = True
+        
+    else:
+        owner = False
+
     print(f"The one who created the listing is: {created.creator}")
+    if (request.GET.get('close')):
+        exact_item.active=False
+        exact_item.save()
+        print(exact_item)
+        
+        return HttpResponseRedirect(reverse(listing, args=(list_id)))
+        #return render(request, "auctions/closebid.html")
 
     #check if the user submits the form
     if request.method=="POST":
@@ -136,6 +155,10 @@ def listing(request, list_id):
         #Check to see if user clicks on bid button
         if 'bid' in request.POST:
             form = BidsForm(request.POST or None)
+            bidder = User.objects.get(pk=request.user.id)
+
+                
+            
             #Checking form validity 
             if form.is_valid():
                 current_bid = form.cleaned_data["bid_amount"]
@@ -144,9 +167,17 @@ def listing(request, list_id):
                 if exact_item.start_bid < current_bid:
                     exact_item.start_bid = current_bid
                     exact_item.save()
+                    # Bid table must be updated
+                    bid_update = Bids(bid_amount=current_bid, uid=bidder, listid=exact_item)
+
+                    bid_update.save()
+
+                    print(bid_update)
+
+                    
                 else:
                     return HttpResponse("The amount you are bidding is less than the current bid")
-                
+
             return HttpResponseRedirect(reverse("listing", args=(list_id,)))
         #end-bid
 
@@ -196,7 +227,9 @@ def listing(request, list_id):
      "created_by" : created,
      "form" : BidsForm(),
      "comments": CommentsForm,
-     "all_comments": allcomments
+     "all_comments": allcomments,
+     "owner" : owner,
+     
     })
 
 @login_required
@@ -208,5 +241,6 @@ def watchlist(request, user_id):
         "user": user,
         "watchlist" : watchlist
     })
-    
+def closebid(request):
+    return HttpResponse("The owner is ")
 
