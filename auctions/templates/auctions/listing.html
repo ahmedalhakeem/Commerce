@@ -1,0 +1,72 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+        <!--Content-->
+        <div class="conten clear-fix">
+        
+            <!--Main content-->
+            <div class="main-content">
+                <div class="post">
+
+                    {% if item.picture %}
+                    <img src="{{ item.picture.url }}" class="post-image">
+                    {% endif %}
+                    <div class="post-preview">
+                        <h2>{{ item.title }}</h2>
+                        <i class="far fa-user">Information</i>
+                        &nbsp;
+                        <p class="preview-text">{{ item.description }}</p>
+                        <p class="preview-text">{{ item.category }}</p>
+                        <p class="preview-text">{{ item.start_bid }}</p>
+                        <p class="preview-text">Created_by{{ created_by.creator }}</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% if item.active %}
+       <form action="{% url 'listing' list_id %}" method="POST">
+            {% csrf_token %}
+            {{ form }}
+           
+            <input type="submit" name="bid" value="Bid">
+            <input type="submit" name="watchlist" value="Add to Watchlist">
+        </form>
+        
+    </div>
+    &nbsp;
+    {% endif %}
+    
+    {% if owner %}
+    <form action="{% url 'listing' list_id %}" method="GET">
+        <input type="submit" name="close" value="close bid" class="btn">
+
+    </form>
+    {% endif %}
+
+    
+    
+    
+    <!--{% if winner %}
+    <h6>the Winner is {{ winner }}</h6>
+    {% endif %}-->
+    <div class="row">
+        <form action="{% url 'listing' list_id%}" method="POST">
+            {% csrf_token %}
+            {{ comments }}
+            <input type="submit" value="comment">
+        </form>
+
+       <h1>Comments</h1>
+       {% for comment in all_comments %}
+       <div class="com-cnt">
+           <div class="text">
+               {{ comment.comment }}
+           </div>
+       </div>
+
+       
+       {% endfor %}
+    </div>   
+{% endblock %}

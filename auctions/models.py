@@ -28,8 +28,12 @@ class Listings(models.Model):
 
 class Bids(models.Model):
     bid_amount = models.IntegerField()
-    uid = models.ForeignKey(User, on_delete=models.CASCADE)
-    listid=models.ForeignKey(Listings, on_delete=models.CASCADE)
+    uid = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder")
+    listid=models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="list")
+
+    def __str__(self):
+        return f"{self.bid_amount} by {self.uid} on {self.listid}"
+
 
 class Created_by(models.Model):
     creator = models.ForeignKey(User, on_delete= models.CASCADE, related_name="creator")

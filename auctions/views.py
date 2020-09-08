@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import Max
 
 from .models import *
 from .forms import *
@@ -127,8 +127,6 @@ def listing(request, list_id):
     # Select the list through its id:
     exact_item = Listings.objects.get(pk=list_id)
 
-    
-    
 
     #Recognize who created the listing:
     created = Created_by.objects.get(listing=exact_item)
@@ -144,9 +142,15 @@ def listing(request, list_id):
     if (request.GET.get('close')):
         exact_item.active=False
         exact_item.save()
-        print(exact_item)
+    #item = Listings.objects.get(pk=list_id)
+    #item.list.all()
+    #max_bid = item.list.aggregate(Max('bid_amount'))
+    #print(max_bid)
+    
+    #winner = item.list.get(bid_amount=max_bid["bid_amount__max"])
         
-        return HttpResponseRedirect(reverse(listing, args=(list_id)))
+        
+        #return HttpResponseRedirect(reverse(listing, args=(list_id)))
         #return render(request, "auctions/closebid.html")
 
     #check if the user submits the form
@@ -192,7 +196,7 @@ def listing(request, list_id):
                     
                     return HttpResponse(f"Mr. {user},  this item is already in your watchlist")
                 
-                print(exietance)
+                print(existence)
                 # Add to watchlist
                 user.watchlist.add(exact_item)
             
@@ -228,7 +232,9 @@ def listing(request, list_id):
      "form" : BidsForm(),
      "comments": CommentsForm,
      "all_comments": allcomments,
-     "owner" : owner,
+     #"winner" : winner,
+     "owner" : owner
+     
      
     })
 
