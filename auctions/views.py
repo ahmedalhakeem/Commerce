@@ -126,6 +126,9 @@ def create_listing(request, user_id):
 def listing(request, list_id):
     # Select the list through its id:
     exact_item = Listings.objects.get(pk=list_id)
+    allcomments = Comments.objects.filter(list_comment=exact_item).all()
+
+    
 
 
     #Recognize who created the listing:
@@ -139,19 +142,11 @@ def listing(request, list_id):
         owner = False
 
     print(f"The one who created the listing is: {created.creator}")
-    if (request.GET.get('close')):
-        exact_item.active=False
-        exact_item.save()
-    #item = Listings.objects.get(pk=list_id)
-    #item.list.all()
-    #max_bid = item.list.aggregate(Max('bid_amount'))
-    #print(max_bid)
-    
-    #winner = item.list.get(bid_amount=max_bid["bid_amount__max"])
+    #if(request.GET.get('close')):
         
+         
         
         #return HttpResponseRedirect(reverse(listing, args=(list_id)))
-        #return render(request, "auctions/closebid.html")
 
     #check if the user submits the form
     if request.method=="POST":
@@ -200,12 +195,8 @@ def listing(request, list_id):
                 # Add to watchlist
                 user.watchlist.add(exact_item)
             
-            return render(request, "auctions/listing.html", {
-                "list_id":list_id,
-                "item" : exact_item,
-                "created_by" : created,
-                "form" : BidsForm()
-            })
+            return HttpResponseRedirect(reverse(listing, args=(list_id,)))
+
         #Comments 
         comments = CommentsForm(request.POST or None)
 
@@ -218,22 +209,44 @@ def listing(request, list_id):
 
 
             return HttpResponseRedirect(reverse(listing, args=(list_id,)))
-                
+
+        if 'close' in request.POST:
+            exact_item.active = False
+            exact_item.save()
+            max_bid = exact_item.list.aggregate(Max('bid_amount'))
+            print(max_bid)
+    
+            winner = exact_item.list.get(bid_amount=max_bid["bid_amount__max"])
+            winner = winner.uid
+            
+            
+           
+            return render(request, "auctions/listing.html",{
+                "item": exact_item,
+                "list_id":list_id,
+                "created_by" : created,
+                "form" : BidsForm(),
+                "comments": CommentsForm(),
+                "all_comments": allcomments,
+                "owner" : owner,
+                "winner" : winner            
+            })
+
+                     
            
 
 
     # Display all comments 
-    allcomments = Comments.objects.filter(list_comment=exact_item).all()
 
     return render(request, "auctions/listing.html",{
      "item": exact_item,
      "list_id":list_id,
      "created_by" : created,
      "form" : BidsForm(),
-     "comments": CommentsForm,
+     "comments": CommentsForm(),
      "all_comments": allcomments,
-     #"winner" : winner,
-     "owner" : owner
+     "owner" : owner,
+     
      
      
     })

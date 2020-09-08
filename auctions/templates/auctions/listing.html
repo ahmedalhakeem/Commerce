@@ -29,7 +29,7 @@
        <form action="{% url 'listing' list_id %}" method="POST">
             {% csrf_token %}
             {{ form }}
-           
+    
             <input type="submit" name="bid" value="Bid">
             <input type="submit" name="watchlist" value="Add to Watchlist">
         </form>
@@ -39,7 +39,8 @@
     {% endif %}
     
     {% if owner %}
-    <form action="{% url 'listing' list_id %}" method="GET">
+    <form action="{% url 'listing' list_id %}" method="POST">
+        {% csrf_token %}
         <input type="submit" name="close" value="close bid" class="btn">
 
     </form>
@@ -47,10 +48,11 @@
 
     
     
+    {% if winner %}
+    <h2>The winner is  {{ winner }}</h2>
+    {% endif %}
     
-    <!--{% if winner %}
-    <h6>the Winner is {{ winner }}</h6>
-    {% endif %}-->
+    
     <div class="row">
         <form action="{% url 'listing' list_id%}" method="POST">
             {% csrf_token %}
@@ -62,7 +64,7 @@
        {% for comment in all_comments %}
        <div class="com-cnt">
            <div class="text">
-               {{ comment.comment }}
+               {{ comment.comment }} by {{ comment.user_comment}}
            </div>
        </div>
 
