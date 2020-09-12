@@ -24,7 +24,7 @@ class Listings(models.Model):
     
 
     def __str__(self):
-        return f"{self.title} {self.description}, {self.category}, {self.start_bid}, {self.picture}, {self.watchlist}"
+        return f" {self.id}, {self.title} {self.description}, {self.category}, {self.start_bid}, {self.picture}, {self.watchlist}"
 
 class Bids(models.Model):
     bid_amount = models.IntegerField()

@@ -18,13 +18,15 @@ body {
 .content {
     width: 90%;
     margin: 30px auto 30px;
+    padding: 10px;
     border: 1px solid red;
-
 }
 .content .main-content {
     width: 69%;
     float: left;
-    border : 1px solid blue;
+    border : 1px solid gray;
+    margin: 10px;
+    border-radius: 10px;
 }
 .content .main-content .post {
     width: 95%;
@@ -46,6 +48,7 @@ body {
     width: 40%;
     height: 100%;
     float: left;
+    margin-top:20px;
 }
 .content .main-content .post .post-preview {
     width: 60%;
@@ -61,3 +64,63 @@ body {
     border : 1px dashed green;
     height: 300px;
 }
+/* Additional styles for watchlist page
+*/
+
+.content .watchlist {
+    border:1px solid blue;
+   
+}
+
+.content .watchlist .actual-watchlist {
+    border: 1px dotted brown;
+    width: 80%;
+    float: left;
+}
+
+.comment-content {
+    width: 50%;
+    border: 1px solid green;
+    position: relative;
+    float: left;
+    margin: 10px 0px 10px 20px;
+}
+.comment-content .cmt{
+    float: right;
+    width: 70%;
+    height: 200px;
+    border: 1px solid yellow;
+    
+    
+}
+.comment-content .cmt .username{
+    font-weight: 500;
+    position: relative;
+    margin-left: 20px;
+    font-size: large;
+    font-style: italic;
+    
+}
+.comment-content .cmt .text {
+    width: 80%;
+    border: 1px solid black;
+    padding: 20px;
+    top: 30px;
+    border-radius: 25px;
+}
+
+.comment-content .a-image {
+    width: 100px;
+    border: 1px solid red;
+    float: left;
+    margin-left: 30px;
+    margin-top: 20px;
+    
+}    
+.comment-content .a-image .img-circle {
+    height: 87px;
+    width: 80px;
+    border-radius: 50px;
+    margin: 10px 15px 10px 10px;
+}
+

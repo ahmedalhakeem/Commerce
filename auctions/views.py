@@ -126,140 +126,30 @@ def create_listing(request, user_id):
 def listing(request, list_id):
     # Select the list through its id:
     exact_item = Listings.objects.get(pk=list_id)
+    
+    # Determine who created this listing?
+    createdby = Created_by.objects.get(listing=exact_item)
     allcomments = Comments.objects.filter(list_comment=exact_item).all()
-
     
 
-
-    #Recognize who created the listing:
-    created = Created_by.objects.get(listing=exact_item)
-    
-    #Close Auctions
-    if request.user == created.creator:
-        owner = True
-        
-    else:
-        owner = False
-
-    print(f"The one who created the listing is: {created.creator}")
-    #if(request.GET.get('close')):
-        
-         
-        
-        #return HttpResponseRedirect(reverse(listing, args=(list_id)))
-
-    #check if the user submits the form
-    if request.method=="POST":
-
-        #Check to see if user clicks on bid button
-        if 'bid' in request.POST:
-            form = BidsForm(request.POST or None)
-            bidder = User.objects.get(pk=request.user.id)
-
-                
-            
-            #Checking form validity 
-            if form.is_valid():
-                current_bid = form.cleaned_data["bid_amount"]
-
-                #Compare between the bidding value and the current bid 
-                if exact_item.start_bid < current_bid:
-                    exact_item.start_bid = current_bid
-                    exact_item.save()
-                    # Bid table must be updated
-                    bid_update = Bids(bid_amount=current_bid, uid=bidder, listid=exact_item)
-
-                    bid_update.save()
-
-                    print(bid_update)
-
-                    
-                else:
-                    return HttpResponse("The amount you are bidding is less than the current bid")
-
-            return HttpResponseRedirect(reverse("listing", args=(list_id,)))
-        #end-bid
-
-        # When the user clicks on 'add to watchlist':    
-        if 'watchlist' in request.POST:
-            if request.user.is_authenticated:
-                #select the username
-                user = User.objects.get(pk=request.user.id)
-                #Check the existence of the item in the user's watchlist page
-                existence = user.watchlist.all()
-                if exact_item in existence:
-                    
-                    return HttpResponse(f"Mr. {user},  this item is already in your watchlist")
-                
-                print(existence)
-                # Add to watchlist
-                user.watchlist.add(exact_item)
-            
-            return HttpResponseRedirect(reverse(listing, args=(list_id,)))
-
-        #Comments 
-        comments = CommentsForm(request.POST or None)
-
-      
-        if comments.is_valid():
-            user = User.objects.get(pk=request.user.id)
-            comment = comments.cleaned_data["comment"]
-            ucomment= Comments(comment=comment, user_comment=user, list_comment=exact_item)
-            ucomment.save()
-
-
-            return HttpResponseRedirect(reverse(listing, args=(list_id,)))
-
-        if 'close' in request.POST:
-            exact_item.active = False
-            exact_item.save()
-            max_bid = exact_item.list.aggregate(Max('bid_amount'))
-            print(max_bid)
-    
-            winner = exact_item.list.get(bid_amount=max_bid["bid_amount__max"])
-            winner = winner.uid
-            
-            
-           
-            return render(request, "auctions/listing.html",{
-                "item": exact_item,
-                "list_id":list_id,
-                "created_by" : created,
-                "form" : BidsForm(),
-                "comments": CommentsForm(),
-                "all_comments": allcomments,
-                "owner" : owner,
-                "winner" : winner            
-            })
-
-                     
-           
-
-
-    # Display all comments 
 
     return render(request, "auctions/listing.html",{
-     "item": exact_item,
-     "list_id":list_id,
-     "created_by" : created,
-     "form" : BidsForm(),
-     "comments": CommentsForm(),
-     "all_comments": allcomments,
-     "owner" : owner,
-     
-     
-     
+        "item" : exact_item,
+        "createdby" : createdby,
+        "allcomments" : allcomments
     })
 
 @login_required
 def watchlist(request, user_id):
-
     user = User.objects.get(pk=user_id)
-    watchlist = user.watchlist.all() 
+    watchlist = user.watchlist.all()
     return render(request, "auctions/watchlist.html",{
         "user": user,
         "watchlist" : watchlist
     })
+#def watchlistremove(request, list_id):
+ #   list = Listings.objects.get(pk=list_id)
+    
 def closebid(request):
     return HttpResponse("The owner is ")
 
