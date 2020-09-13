@@ -20,16 +20,41 @@
                         <p class="preview-text">{{ item.description }}</p>
                         <p class="preview-text">{{ item.category }}</p>
                         <p class="preview-text">{{ item.start_bid }}</p>
-                        <p class="preview-text">Created_by{{ createdby.creator }}</p>
+                        <p class="preview-text">Created_by: <i>{{ createdby.creator }}</i></p>
 
                     </div>
                 </div>
             </div>
+           
+            
         </div>
+        <div class="formcheck">
+            <form action="{% url 'listing' item.id %}" method="GET">
+                {% csrf_token %}
+                {% if wlcheck %}
+                <input type="submit" name="remove" value="Rem" class="button">
+                {% else %}
+                <input type="submit" name="add" value="Add" class="button">
+                {% endif %}
+            </form>
+            
+        </div>
+
+        <div class="close">
+            <form action="{% url 'listing' item.id %}" method="GET">
+                {% csrf_token %}
+                {% if possessor %}
+                <input type="submit" name="close" value="close bid" class="btn">
+                {% endif %}
+        
+        
+            </form>
+        </div>
+        
         
         <!--Display all Comments-->
     
-        
+       
     
     {% for comments in allcomments %}
         <div class="comment-content">
@@ -42,10 +67,6 @@
             </div>
             
         </div>
-    
-            
-     
-    
         {% endfor %}
     
     

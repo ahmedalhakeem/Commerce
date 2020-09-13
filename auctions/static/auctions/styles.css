@@ -123,4 +123,12 @@ body {
     border-radius: 50px;
     margin: 10px 15px 10px 10px;
 }
+.formcheck{
+    float: right;
+    top: 200px;
+    border: 1px solid black;
+    position: absolute;
+    display: block;
+}
+
 

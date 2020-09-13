@@ -13,14 +13,15 @@ def listing(request, list_id):
     print(check_watchlist)
     
     if check_watchlist:
-        if(request.GET.get('remove')):
+        if(request.GET.get("remove")):
             user.watchlist.remove(exact_item)
-            
-            return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+            message1= "Removed from watchlist"
+            return HttpResponseRedirect(reverse("listing", args=(list_id, )))
     
     else:
-        if(request.GET.get('add')):     
+        if(request.GET.get("add")):     
             user.watchlist.add(exact_item)
+            message2 = "Added to watchlist"
         
 
             return HttpResponseRedirect(reverse("listing", args=(list_id,)))

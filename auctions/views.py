@@ -128,15 +128,54 @@ def listing(request, list_id):
     exact_item = Listings.objects.get(pk=list_id)
     
     # Determine who created this listing?
-    createdby = Created_by.objects.get(listing=exact_item)
+    owner = Created_by.objects.get(listing=exact_item)
     allcomments = Comments.objects.filter(list_comment=exact_item).all()
+
+    signed_user = User.objects.get(pk=request.user.id)
+    #print(signed_user)
+    ##############
+    # Check if the item inside watchlist
+    wlcheck = signed_user.watchlist.filter(id=exact_item.id).exists()
+    if wlcheck:
+        if(request.GET.get('remove')):
+            signed_user.watchlist.remove(exact_item)
+            message1= "Removed from watchlist"
+            return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+
+            #return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+    else:
+        if(request.GET.get('add')):
+            signed_user.watchlist.add(exact_item)
+            message2 = "Added to watchlist"
+            return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+            #return HttpResponse("add")
+            # return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+        #print("out")
     
+    ## Determine if the user is signed in and is the one who created the listing
+    if request.user == owner.creator:
+        possessor = True
+        
+    else:
+        possessor=False
+    if request.GET.get('close'):
+        exact_item.active = False
+        max_bid = exact_item.list.aggregate(Max('bid_amount')) 
+        winner = exact_item.list.get(bid_amount=max_bid["bid_amount__max"])
+        winner = winner.uid
+        exact_item.save()   
+    
+    ## In case of Post Method!
+    
+
 
 
     return render(request, "auctions/listing.html",{
         "item" : exact_item,
-        "createdby" : createdby,
-        "allcomments" : allcomments
+        "createdby" : owner,
+        "allcomments" : allcomments,
+        "wlcheck" : wlcheck,
+        "possessor" :possessor,
     })
 
 @login_required
