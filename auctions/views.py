@@ -139,15 +139,17 @@ def listing(request, list_id):
     if wlcheck:
         if(request.GET.get('remove')):
             signed_user.watchlist.remove(exact_item)
-            message1= "Removed from watchlist"
+            #message1= "Removed from watchlist"
             return HttpResponseRedirect(reverse("listing", args=(list_id,)))
 
             #return HttpResponseRedirect(reverse("listing", args=(list_id,)))
     else:
         if(request.GET.get('add')):
             signed_user.watchlist.add(exact_item)
-            message2 = "Added to watchlist"
+            #message2 = "Added to watchlist"
             return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+            
+            
             #return HttpResponse("add")
             # return HttpResponseRedirect(reverse("listing", args=(list_id,)))
         #print("out")
@@ -159,23 +161,56 @@ def listing(request, list_id):
     else:
         possessor=False
     if request.GET.get('close'):
-        exact_item.active = False
-        max_bid = exact_item.list.aggregate(Max('bid_amount')) 
-        winner = exact_item.list.get(bid_amount=max_bid["bid_amount__max"])
-        winner = winner.uid
-        exact_item.save()   
-    
-    ## In case of Post Method!
-    
+        bid_happend = exact_item.list.filter(bid_amount=exact_item.start_bid)
+        if not bid_happend:
+            return HttpResponse("The auction for this item has not yet started")
+        else:
+            return HttpResponseRedirect(reverse("closedbid",args=(list_id,)))
+            
+
+    if request.method=="POST":
+        if 'bid' in request.POST:
+            bidform = BidsForm(request.POST or None)
+            bidder = User.objects.get(pk=request.user.id)
+            print(f"Last bid came from  :{bidder}")
+
+            #Checking form validity 
+            if bidform.is_valid():
+                current_bid = bidform.cleaned_data["bid_amount"]
+
+                #Compare between the bidding value and the current bid
+                if exact_item.start_bid < current_bid:
+                    exact_item.start_bid = current_bid
+                    exact_item.save()
+                    # Bid table must be updated
+                    bid_update = Bids(bid_amount=current_bid, uid=bidder, listid=exact_item)
+                    bid_update.save()
+                    print(bid_update)
+
+            return HttpResponseRedirect(reverse("listing", args=(list_id,)))
+        
+        #Enter a new Comment
+        comments = CommentsForm(request.POST or None)
+        if comments.is_valid():
+            user_comment = User.objects.get(pk=request.user.id)
+            comment = comments.cleaned_data["comment"]
+            ucomment= Comments(comment=comment, user_comment=user_comment, list_comment=exact_item)
+            ucomment.save()
+            return HttpResponseRedirect(reverse(listing, args=(list_id,)))
+
 
 
 
     return render(request, "auctions/listing.html",{
+        "list_id" :list_id,
         "item" : exact_item,
         "createdby" : owner,
         "allcomments" : allcomments,
+        "comments": CommentsForm(),
+        "bidform" : BidsForm(),
         "wlcheck" : wlcheck,
         "possessor" :possessor,
+        
     })
 
 @login_required
@@ -189,6 +224,32 @@ def watchlist(request, user_id):
 #def watchlistremove(request, list_id):
  #   list = Listings.objects.get(pk=list_id)
     
-def closebid(request):
-    return HttpResponse("The owner is ")
+def closedlist(request):
+    non_active = Listings.objects.filter(active=False)
+    
+    return render(request, "auctions/closedlist.html",{
+        "non_active" : non_active,
+
+    })
+
+def closedbid(request, list_id):
+    item = Listings.objects.get(pk=list_id)
+    max_bid = item.list.aggregate(Max('bid_amount'))
+    winner = item.list.get(bid_amount=max_bid["bid_amount__max"])
+    winner = winner.uid
+    item.active=False
+    item.save()
+
+    return render(request, "auctions/closedbid.html",{
+        "winner" : winner
+    })
+
+    
+
+    
+
+
+
+
+    #return HttpResponse("The owner is ")
 

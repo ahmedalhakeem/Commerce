@@ -1,4 +1,6 @@
 {% extends "auctions/layout.html" %}
 {% block body %}
-<h1>The winner is : </h1>
+{% if winner %}
+<h1>The Winner is {{winner}}</h1>
+{% endif %}
 {% endblock %}

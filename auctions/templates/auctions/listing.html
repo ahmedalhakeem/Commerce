@@ -41,6 +41,7 @@
         </div>
 
         <div class="close">
+
             <form action="{% url 'listing' item.id %}" method="GET">
                 {% csrf_token %}
                 {% if possessor %}
@@ -50,12 +51,21 @@
         
             </form>
         </div>
+        <div class="bidform" >
+            <form action="{% url 'listing' list_id %}" method="POST">
+                {% csrf_token %}
+                {{ bidform }}
+        
+                <input type="submit" name="bid" value="Bid">
+            </form>
+            
+
+        </div>
         
         
-        <!--Display all Comments-->
-    
-       
-    
+        
+        
+    <!--Display all Comments-->
     {% for comments in allcomments %}
         <div class="comment-content">
             <div class="a-image">
@@ -68,6 +78,13 @@
             
         </div>
         {% endfor %}
+        <div class="ent_comment">
+            <form action="{% url 'listing' list_id %}" method="POST">
+                {% csrf_token %}
+                {{ comments }}
+                <input type="submit" value="comment" class="btn">
+            </form>
+        </div>
     
     
     {% endblock %}
