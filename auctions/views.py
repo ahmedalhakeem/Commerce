@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
+from django.forms import ModelForm
 
 from .models import *
 from .forms import *
@@ -172,12 +173,12 @@ def listing(request, list_id):
         if 'bid' in request.POST:
             bidform = BidsForm(request.POST or None)
             bidder = User.objects.get(pk=request.user.id)
-            print(f"Last bid came from  :{bidder}")
+           
 
             #Checking form validity 
             if bidform.is_valid():
                 current_bid = bidform.cleaned_data["bid_amount"]
-
+                
                 #Compare between the bidding value and the current bid
                 if exact_item.start_bid < current_bid:
                     exact_item.start_bid = current_bid

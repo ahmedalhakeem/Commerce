@@ -1,4 +1,5 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
     <h2>Active Listings</h2>
@@ -11,8 +12,10 @@
         <div class="main-content">
             <!--<h1 class="recent-post-title">Recent Posts</h1>-->
             <div class="post">
-                {% if list.picture%}
+                {% if list.picture %}
                 <img src="{{ list.picture.url }}" class="post-image">
+                {% else %}
+                <img src="{% static 'auctions/images/template.png' %}" class="post-image">
                 {% endif %}
                 <div class="post-preview">
                     <h2><a href="{% url 'listing' list.id %}">{{ list.title }}</a></h2>

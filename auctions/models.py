@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.forms import ModelForm 
+from django import forms
 
 class User(AbstractUser):
     pass
@@ -49,25 +50,6 @@ class Comments(models.Model):
     list_comment = models.ForeignKey(Listings, on_delete=models.CASCADE)
 
 # Create a modelform for each model
-class CategoryForm(ModelForm):
-    class meta:
-        model = Category
-        fields = ['category_name']
-class ListingsForm(ModelForm):
-    class meta:
-        model = Listings
-        fields = ['title', 'description', 'active', 'picture', 'category', 'start_bid']
-class BidsForm(ModelForm):
-    class meta:
-        model = Bids
-        fields = ['bid_amount', 'uid', 'listid']
-class Created_byForm(ModelForm):
-    model = Created_by
-    fields = ['creator', 'listing']
-    
-class CommentsForm(ModelForm):
-    class meta:
-        model = Comments
-        fields = ['comment', 'user_comment', 'list_comment']
+        
 
 

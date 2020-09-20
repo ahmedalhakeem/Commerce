@@ -1,10 +1,26 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<ul>
+<div class="wrapper-wl">
+    {% for item in non_active %}        
+    <div class="card">
+        {% if item.picture %}
+        <img src="{{ item.picture.url }}" class="card-img-top" style="width: 300px; height: 200px;">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <p class="card-text">{{ item.description }}</p>
+            <a href="{% url 'closedbid' item.id %}" class="btn btn-primary">Click here</a>
+        </div>
+         
+    </div>
+    {% endfor %}
+{% endblock %}
+    
+</div>
+<!--<ul>
 {% for item in non_active %}
-<li>{{ item.title }}</li>
+<li><a href="{% url 'closedbid' item.id %}">{{ item.title }}</a></li>
 
 {% endfor %}
-</ul>
-{% endblock %}
+</ul>-->

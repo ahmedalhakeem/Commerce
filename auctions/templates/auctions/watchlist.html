@@ -1,25 +1,26 @@
 {% extends "auctions/layout.html" %}
 {% block body %}
 
-
-    {% for list in watchlist %}
-        <div class="content">
-            <div class="watchlist">
-                <div class="actual-watchlist">
-                    <span><a href="{% url 'listing' list.id %}">{{list.title}}</a></span>
-                    
-                </div>
-                
-             
-            
-            </div>
+<div class="wrapper-wl">
+    {% for list in watchlist %}        
+    <div class="card">
+        {% if list.picture %}
+        <img src="{{ list.picture.url }}" class="card-img-top" style="width: 300px; height: 200px;">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ list.title }}</h5>
+            <p class="card-text">{{ list.description }}</p>
+            <a href="{% url 'listing' list.id %}" class="btn btn-primary">Click here</a>
         </div>
-   <!-- <li><a href="{% url 'listing' list.id %}">{{list.title}}</a></li>-->
-    
-    
+         
+    </div>
     {% endfor %}
     
-
-
+</div>
+    
 
 {% endblock %}
+
+    
+
+
