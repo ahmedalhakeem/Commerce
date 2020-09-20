@@ -23,10 +23,10 @@
                         {% csrf_token %}
                         {% if wlcheck %}
                         <h2>This item is inside your watchlist</h2>
-                        <input type="submit" name="remove" value="Remove" class="button">
+                        <input type="submit" name="remove" value="Remove" class="btn">
                         {% else %}
                         <h2>This item is not in your watchlist</h2>
-                        <input type="submit" name="add" value="Add" class="button">
+                        <input type="submit" name="add" value="Add" class="btn">
                         {% endif %}
                     </form>
                 </div>
